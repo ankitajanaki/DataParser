@@ -1,10 +1,10 @@
 public class ElectionResult {
-    double votes_dem,votes_gop, total_votes, per_dem, per_gop, per_point_diff;
-    int diff, combined_fips;
-    String state_abbr, county_name;
+    private double votes_dem,votes_gop, total_votes, per_dem, per_gop, per_point_diff;
+    private int diff, combined_fips;
+    private String state_abbr, county_name;
 
 
-    public ElectionResult(double votes_dem, double votes_gop, double total_votes, double per_dem, double per_gop, double per_point_diff, int diff, int combined_fips, String state_abbr, String county_name) {
+    public ElectionResult(double votes_dem, double votes_gop, double total_votes, double per_dem, double per_gop,  int diff, double per_point_diff, String state_abbr, String county_name, int combined_fips) {
         this.votes_dem = votes_dem;
         this.votes_gop = votes_gop;
         this.total_votes = total_votes;
@@ -95,5 +95,20 @@ public class ElectionResult {
 
     public void setCounty_name(String county_name) {
         this.county_name = county_name;
+    }
+
+    public String toString() {
+        return "ElectionResult{" +
+                "votes_dem=" + votes_dem +
+                ", votes_gop=" + votes_gop +
+                ", total_votes=" + total_votes +
+                ", per_dem=" + per_dem +
+                ", per_gop=" + per_gop +
+                ", per_point_diff=" + per_point_diff +
+                ", diff=" + diff +
+                ", combined_fips=" + combined_fips +
+                ", state_abbr='" + state_abbr + '\'' +
+                ", county_name='" + county_name + '\'' +
+                '}';
     }
 }

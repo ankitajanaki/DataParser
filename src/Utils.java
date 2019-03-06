@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Utils {
@@ -29,27 +28,7 @@ public class Utils {
         String state_abbr="", county_name="";
         String [] rows=data.split("\n");
         for(int row=1; row<rows.length; row++){
-            String [] values=null;
-            String valueInQuotes="";
-            String withoutQuote="";
-            int endQuoteIndex=-1;
-            String currentRowValues=rows[row];
-            String withoutChar=currentRowValues.replace("%", "");
-
-            int startingQuoteIndex=withoutChar.indexOf("\"");
-            if(startingQuoteIndex!=-1){
-                endQuoteIndex=withoutChar.indexOf("\"", startingQuoteIndex+1);
-                valueInQuotes=withoutChar.substring(startingQuoteIndex, endQuoteIndex);
-                String withoutComma=valueInQuotes.replace(",", "");
-                withoutQuote=withoutComma.replace("\"","");
-                String first=withoutChar.substring(0,startingQuoteIndex);
-                String end=withoutChar.substring(endQuoteIndex+1);
-                String finalString= first+ withoutQuote+ end;
-                values=finalString.split(",");
-            }else{
-                values=withoutChar.split(",");
-            }
-
+            String[] values=cleanData(rows, row);
             votes_dem=(Double.parseDouble(values[1]));
             votes_gop=(Double.parseDouble(values[2]));
             total_votes=(Double.parseDouble(values[3]));
@@ -64,6 +43,26 @@ public class Utils {
             results.add(electionResult);
         }
         return results;
+    }
+
+    private static String[] cleanData(String [] rows, int row) {
+        String [] values=null;
+        String valueInQuotes="", withoutQuote="", currentRowValues=rows[row];
+        String withoutChar=currentRowValues.replace("%", "");
+        int startingQuoteIndex=withoutChar.indexOf("\""), endQuoteIndex=-1;
+        if(startingQuoteIndex!=-1){
+            endQuoteIndex=withoutChar.indexOf("\"", startingQuoteIndex+1);
+            valueInQuotes=withoutChar.substring(startingQuoteIndex, endQuoteIndex);
+            String withoutComma=valueInQuotes.replace(",", "");
+            withoutQuote=withoutComma.replace("\"","");
+            String first=withoutChar.substring(0,startingQuoteIndex);
+            String end=withoutChar.substring(endQuoteIndex+1);
+            String finalString= first+ withoutQuote+ end;
+            values=finalString.split(",");
+        }else{
+            values=withoutChar.split(",");
+        }
+        return values;
     }
 
 }
