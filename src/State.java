@@ -24,4 +24,21 @@ public class State {
     public void setCounties(ArrayList<County> counties) {
         this.counties = counties;
     }
+
+    public boolean doesStateContainCounty(String name) {
+        for (County c:counties) {
+            if (c.getName().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public County getCounty(String name) {
+        for (County c:counties) {
+            if (c.getName().equalsIgnoreCase(name))
+                return c;
+        }
+        return null;
+    }
 }
