@@ -98,9 +98,79 @@ public class Utils3 {
     }
 
     private static void getEducationCounties(String educationData, State s) {
+        String[] values;
+        String[] educationRows = educationData.split("\n");
+
+
+        for (int row = 6; row < 3288; row++) {
+            values = educationRows[row].split(",");
+            if ( (!values[1].equalsIgnoreCase(s.getName())) || (values[3].length() == 0) || (values.length < 47)) {
+                continue;
+            }
+
+            String cleanedRow = cleanRow(educationRows[row]);
+            values = cleanedRow.split(",");
+
+            if (values.length < 47) {
+                continue;
+            }
+
+            String countyName = values[2];
+
+            if (checkStringLengthZero(values[40]) || checkStringLengthZero(values[41])
+                    || checkStringLengthZero(values[42]) || checkStringLengthZero(values[43])) {
+                continue;
+            }
+
+            Education2016 education2016 = makeEducation2016ObjectForCounty(values);
+            County countyForState = s.getCounty(countyName);
+            if (countyForState != null) {
+                countyForState.setEduc2016(education2016);
+            } else {
+                County c = new County(countyName, 0, null, education2016, null);
+                s.getCounties().add(c);
+            }
+
+        }
     }
 
     private static void getEmploymentCounties(String employmentData, State s) {
+        String[] values;
+        String[] employmentRows = employmentData.split("\n");
+
+        for (int row = 9; row < employmentRows.length; row++) {
+            values = employmentRows[row].split(",");
+
+            if ( (!values[1].equalsIgnoreCase(s.getName())) || (values[3].length() == 0) || (values.length < 46)) {
+                continue;
+            }
+
+            String cleanedRow = cleanRow(employmentRows[row]);
+
+            values = cleanedRow.split(",");
+
+            String countyNameAndStateCombined = values[2];
+            String[] countyNames = countyNameAndStateCombined.split(" ");
+            String finalCountyName = "";
+            if (countyNames.length > 1) {
+                for (int k = 0; k < countyNames.length - 1; k++) {
+                    finalCountyName += countyNames[k];
+                    finalCountyName += " ";
+                }
+                finalCountyName = finalCountyName.trim();
+            }
+
+            Employment2016 employ2016 = makeEmployment2016ObjectForCounty(values);
+
+            County countyForState = s.getCounty(finalCountyName);
+            if (countyForState != null) {
+                countyForState.setEmploy2016(employ2016);
+            } else {
+                County c = new County(finalCountyName, 0, null, null, employ2016);
+                s.getCounties().add(c);
+            }
+        }
+
     }
 
     private static void addStates(ArrayList<String> specificStates, ArrayList<String>allStateNames) {
@@ -173,9 +243,28 @@ public class Utils3 {
         double totalVotes = Double.parseDouble(values[3]);
 
         Election2016 election2016 = new Election2016(demVotes, gopVotes, totalVotes);
-
         return election2016;
     }
 
+    private static Employment2016 makeEmployment2016ObjectForCounty(String[] values) {
+        int totalLaborForce = Integer.parseInt(values[42].trim());
+        int employedLaborForce = Integer.parseInt(values[43].trim());
+        int unemployedLaborForce = Integer.parseInt(values[44].trim());
+        double unemployedPercent = Double.parseDouble(values[45].trim());
+
+        Employment2016 employ2016 = new Employment2016(totalLaborForce, employedLaborForce, unemployedLaborForce,
+                unemployedPercent);
+        return employ2016;
+    }
+
+    private static Education2016 makeEducation2016ObjectForCounty(String[] values) {
+		double noHighSchool = Double.parseDouble(values[40].trim());
+		double onlyHighSchool = Double.parseDouble(values[41].trim());
+		double someCollege = Double.parseDouble(values[42].trim());
+		double bachelorsOrMore = Double.parseDouble(values[43].trim());
+
+		Education2016 education2016 = new Education2016(noHighSchool, onlyHighSchool, someCollege, bachelorsOrMore);
+		return education2016;
+	}
 
 }
